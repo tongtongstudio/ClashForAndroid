@@ -1,7 +1,7 @@
 [submodule "clash-foss"]
 	path = core/src/foss/golang/clash
 	url = https://github.com/tongtongstudio/Dreamacro_clash.git
-# clash-premium: Kr328/clash premium 分支已删除，暂不提供源码（构建时 premium 变体会自动跳过）
-# [submodule "clash-premium"]
-# 	path = core/src/premium/golang/clash
-# 	url = https://github.com/Kr328/clash.git
+[submodule "core/src/premium/golang/clash"]
+	path = core/src/premium/golang/clash
+	url = https://github.com/tongtongstudio/Dreamacro_clash.git
+	branch = premium

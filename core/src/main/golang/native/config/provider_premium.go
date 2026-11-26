@@ -26,7 +26,7 @@ func forEachProviders(rawCfg *config.RawConfig, fun func(index int, total int, k
 }
 
 func destroyProviders(cfg *config.Config) {
-	for _, p := range cfg.ProxyProviders {
+	for _, p := range cfg.Providers {
 		_ = p.(io.Closer).Close()
 	}
 

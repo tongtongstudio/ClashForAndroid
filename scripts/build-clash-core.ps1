@@ -5,7 +5,8 @@ param(
     [string]$Flavor = 'foss',
     [ValidateSet('Debug', 'Release')]
     [string]$BuildType = 'Debug',
-    [string]$NdkVersion = '23.0.7599858'
+    [string]$NdkVersion = '23.0.7599858',
+    [string]$GoHome = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -56,8 +57,19 @@ if (-not (Test-Path $BlobMmdb)) {
     Invoke-WebRequest -UseBasicParsing 'https://github.com/Dreamacro/maxmind-geoip/releases/latest/download/Country.mmdb' -OutFile $BlobMmdb
 }
 
-# Go 1.23+ 对旧版 x/net 的 syscall linkname 有检查，需要关闭
-$goVersion = (& go env GOVERSION).Trim()
+# Go 1.23+ 对旧版 x/net 的 syscall linkname 有检查，需要关闭；
+# premium 使用的 Clash.Meta(2023) 依赖 quic-go，只支持 Go <= 1.20
+if ($Flavor -eq 'premium' -and -not $GoHome) {
+    throw 'premium 内核需要 Go 1.20 工具链，请通过 -GoHome 指定（如 D:\...\_tools\go1.20.14）'
+}
+
+$goExe = if ($GoHome) { Join-Path $GoHome 'bin\go.exe' } else { 'go' }
+if ($GoHome) {
+    $env:GOROOT = $GoHome
+    $env:PATH = (Join-Path $GoHome 'bin') + ';' + $env:PATH
+}
+
+$goVersion = (& $goExe env GOVERSION).Trim()
 $goMinor = if ($goVersion -match '^go1\.(\d+)') { [int]$Matches[1] } else { 0 }
 $checkLinkname = $goMinor -ge 23
 
@@ -92,7 +104,7 @@ foreach ($t in $targets) {
     Write-Host "构建 $Flavor/$($t.Abi) ..."
     Push-Location $ModuleDir
     try {
-        & go @args
+        & $goExe @args
         if ($LASTEXITCODE -ne 0) { throw "go build 失败: $Flavor/$($t.Abi)" }
     } finally {
         Pop-Location

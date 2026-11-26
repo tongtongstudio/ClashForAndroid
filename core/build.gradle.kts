@@ -63,10 +63,27 @@ dependencies {
 }
 
 afterEvaluate {
+    val go120Home = providers.gradleProperty("go120Home").orNull ?: System.getenv("GO120_HOME")
+
     tasks.withType(GolangBuildTask::class.java).forEach {
         it.inputs.dir(golangSource)
-        // Go 1.23+ 会拦截旧版 x/net 对 syscall 的 linkname，插件本身不传该参数，这里补上
-        it.environment("GOFLAGS", "-ldflags=-checklinkname=0")
+
+        if (it.name.contains("Premium")) {
+            // Clash.Meta(2023) 依赖的 quic-go 不支持 Go 1.21+，premium 变体固定使用 Go 1.20
+            if (go120Home.isNullOrBlank()) {
+                it.doFirst {
+                    throw GradleException("premium 变体需要 Go 1.20 工具链，请通过 -Pgo120Home=<go1.20 目录> 指定")
+                }
+            } else {
+                it.environment("PATH", "$go120Home\\bin;${System.getenv("PATH")}")
+                it.environment("GOROOT", go120Home)
+                it.executable = "$go120Home/bin/go.exe"
+            }
+            it.environment("GOFLAGS", "")
+        } else {
+            // Go 1.23+ 会拦截旧版 x/net 对 syscall 的 linkname，插件本身不传该参数，这里补上
+            it.environment("GOFLAGS", "-ldflags=-checklinkname=0")
+        }
     }
 }
 

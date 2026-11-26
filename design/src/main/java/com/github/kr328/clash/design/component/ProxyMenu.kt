@@ -89,7 +89,7 @@ class ProxyMenu(
         menu.menuInflater.inflate(R.menu.menu_proxy, menu.menu)
 
         menu.menu.apply {
-            findItem(R.id.script_mode).isVisible = BuildConfig.PREMIUM
+            findItem(R.id.script_mode).isVisible = false
 
             findItem(R.id.not_selectable).isChecked = uiStore.proxyExcludeNotSelectable
 

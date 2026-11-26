@@ -29,12 +29,17 @@ var processors = []processor{
 type processor func(cfg *config.RawConfig, profileDir string) error
 
 func patchOverride(cfg *config.RawConfig, _ string) error {
-	if err := json.NewDecoder(strings.NewReader(ReadOverride(OverrideSlotPersist))).Decode(cfg); err != nil {
+	content := ReadOverride(OverrideSlotPersist)
+	if err := json.NewDecoder(strings.NewReader(content)).Decode(cfg); err != nil {
 		log.Warnln("Apply persist override: %s", err.Error())
 	}
-	if err := json.NewDecoder(strings.NewReader(ReadOverride(OverrideSlotSession))).Decode(cfg); err != nil {
+	applyExtraOverride(cfg, content)
+
+	content = ReadOverride(OverrideSlotSession)
+	if err := json.NewDecoder(strings.NewReader(content)).Decode(cfg); err != nil {
 		log.Warnln("Apply session override: %s", err.Error())
 	}
+	applyExtraOverride(cfg, content)
 
 	return nil
 }
