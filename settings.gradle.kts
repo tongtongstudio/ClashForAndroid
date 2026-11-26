@@ -32,7 +32,7 @@ dependencyResolutionManagement {
             val viewpager = "1.0.0"
             val material = "1.6.1"
             val serialization = "1.3.3"
-            val kaidl = "1.15"
+            val kaidl = "1.15" // 本地 mavenLocal 发布（源码 D:\TongTongStudio\deprecated\kaidl）
             val room = "2.4.2"
             val multiprocess = "1.0.0"
 
@@ -40,7 +40,7 @@ dependencyResolutionManagement {
             library("build-kotlin-common", "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin")
             library("build-kotlin-serialization", "org.jetbrains.kotlin:kotlin-serialization:$kotlin")
             library("build-ksp", "com.google.devtools.ksp:symbol-processing-gradle-plugin:$ksp")
-            library("build-golang", "com.github.kr328.golang:gradle-plugin:$golang")
+//            library("build-golang", "com.github.kr328.golang:gradle-plugin:$golang")
             library("kotlin-coroutine", "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine")
             library("kotlin-serialization-json", "org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization")
             library("androidx-core", "androidx.core:core-ktx:$coreKtx")

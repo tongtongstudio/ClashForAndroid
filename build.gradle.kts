@@ -7,24 +7,38 @@ import java.util.*
 
 buildscript {
     repositories {
-        mavenCentral()
+        mavenLocal()
+//        mavenCentral()
         google()
-        maven("https://maven.kr328.app/releases")
+//        maven("https://maven.kr328.app/releases")
+        maven("https://jitpack.io")
+        maven("https://developer.huawei.com/repo/")
+        maven("https://maven.aliyun.com/repository/central")
+        maven("https://maven.aliyun.com/repository/jcenter")
+        maven("https://maven.aliyun.com/repository/public")
+        maven("https://maven.aliyun.com/repository/google")
     }
     dependencies {
         classpath(libs.build.android)
         classpath(libs.build.kotlin.common)
         classpath(libs.build.kotlin.serialization)
         classpath(libs.build.ksp)
-        classpath(libs.build.golang)
+//        classpath(libs.build.golang)
     }
 }
 
 subprojects {
     repositories {
-        mavenCentral()
+        mavenLocal()
+//        mavenCentral()
         google()
-        maven("https://maven.kr328.app/releases")
+//        maven("https://maven.kr328.app/releases")
+        maven("https://jitpack.io")
+        maven("https://developer.huawei.com/repo/")
+        maven("https://maven.aliyun.com/repository/central")
+        maven("https://maven.aliyun.com/repository/jcenter")
+        maven("https://maven.aliyun.com/repository/public")
+        maven("https://maven.aliyun.com/repository/google")
     }
 
     val isApp = name == "app"

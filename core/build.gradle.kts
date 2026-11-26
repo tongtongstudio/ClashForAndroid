@@ -1,5 +1,5 @@
-import com.github.kr328.golang.GolangBuildTask
-import com.github.kr328.golang.GolangPlugin
+//import com.github.kr328.golang.GolangBuildTask
+//import com.github.kr328.golang.GolangPlugin
 import java.io.FileOutputStream
 import java.net.URL
 import java.time.Duration
@@ -8,7 +8,7 @@ plugins {
     kotlin("android")
     id("com.android.library")
     id("kotlinx-serialization")
-    id("golang-android")
+//    id("golang-android")
 }
 
 val geoipDatabaseUrl =
@@ -17,22 +17,22 @@ val geoipInvalidate = Duration.ofDays(7)!!
 val geoipOutput = buildDir.resolve("intermediates/golang_blob")
 val golangSource = file("src/main/golang/native")
 
-golang {
-    sourceSets {
-        create("foss") {
-            tags.set(listOf("foss"))
-            srcDir.set(file("src/foss/golang"))
-        }
-        create("premium") {
-            tags.set(listOf("premium", "without_gvisor", "without_system"))
-            srcDir.set(file("src/premium/golang"))
-        }
-        all {
-            fileName.set("libclash.so")
-            packageName.set("cfa/native")
-        }
-    }
-}
+//golang {
+//    sourceSets {
+//        create("foss") {
+//            tags.set(listOf("foss"))
+//            srcDir.set(file("src/foss/golang"))
+//        }
+//        create("premium") {
+//            tags.set(listOf("premium", "without_gvisor", "without_system"))
+//            srcDir.set(file("src/premium/golang"))
+//        }
+//        all {
+//            fileName.set("libclash.so")
+//            packageName.set("cfa/native")
+//        }
+//    }
+//}
 
 android {
     productFlavors {
@@ -40,7 +40,7 @@ android {
             externalNativeBuild {
                 cmake {
                     arguments("-DGO_SOURCE:STRING=${golangSource}")
-                    arguments("-DGO_OUTPUT:STRING=${GolangPlugin.outputDirOf(project, null, null)}")
+                    arguments("-DGO_OUTPUT:STRING=${rootProject.buildDir}/golang")
                     arguments("-DFLAVOR_NAME:STRING=$name")
                 }
             }
@@ -50,6 +50,13 @@ android {
     externalNativeBuild {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
+        }
+    }
+
+    sourceSets {
+        getByName("main") {
+            // 手动构建的 libclash.so 通过 jniLibs 打包进 APK（原 golang 插件被禁用后需手工提供）
+            jniLibs.srcDir(rootProject.buildDir.resolve("golang/fossDebug"))
         }
     }
 }
@@ -63,9 +70,9 @@ dependencies {
 }
 
 afterEvaluate {
-    tasks.withType(GolangBuildTask::class.java).forEach {
-        it.inputs.dir(golangSource)
-    }
+//    tasks.withType(GolangBuildTask::class.java).forEach {
+//        it.inputs.dir(golangSource)
+//    }
 }
 
 task("downloadGeoipDatabase") {
